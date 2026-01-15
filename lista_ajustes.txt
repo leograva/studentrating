@@ -1,0 +1,2 @@
+Avaliações:
+- Definir no models e no template a trava de 1 a 10.

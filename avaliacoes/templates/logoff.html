@@ -1,0 +1,5 @@
+{% extends 'base_login.html' %}
+{% block content %}
+<h3> Para acessar essa página você precisa estar logado<br> 
+    <a href="{% url 'logoff' %}">Clique aqui para ser redirecionado ao login</a></h3>
+{% endblock %}

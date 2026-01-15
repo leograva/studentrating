@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3><center> Avaliações </center></h3>
+<form action="" method="POST">{% csrf_token %}
+    <div class="form-group">
+      <label for="exampleFormControlInput1">Aluno</label>
+      <select name="aluno" class="form-control" id="exampleFormControlInput1">
+        {% for aluno in lista_alunos %}
+          <option value="{{ aluno.id }}">{{ aluno.nome }} - {{aluno.turma.nome}}</option>
+        {% endfor %}
+      </select>
+    </div><br>
+    <div class="form-group">
+      <label for="exampleFormControlInput1">Nota</label>
+     <select name="cars" id="car-select">
+  <option value="1">1</option>
+  <option value="2">2</option>
+  <option value="3">3</option>
+  <option value="4">4</option>
+  <option value="5">5</option>
+  <option value="6">6</option>
+  <option value="7">7</option>
+  <option value="8">8</option>
+  <option value="9">9</option>
+  <option value="10">10</option>
+</select>
+    </div>
+    <br>
+    <div class="form-group">
+      <label for="exampleFormControlInput1">Comentários adicionais</label>
+        <br><textarea id="comentario" name="comentario" rows="5" cols="100" placeholder="Digite seu comentário aqui..."></textarea>
+        </div> <input type="submit" value="Corrigir comentário com IA">
+    
+    <div class="form-group">
+      <br>
+      <input type="submit" value="Enviar avaliação">
+    </div>  
+  </form>
+  {% if messages %}
+  {% for m in messages %}
+      <div class="alert alert-warning" role="alert">
+        {{ m }}
+      </div>
+  {% endfor %}
+  {% endif %}
+<div class="table-wrapper-scroll-y my-custom-scrollbar">
+  <table class="table table-striped mb-1">
+      <thead>
+          <tr>
+              <th scope="col">Aluno</th>
+              <th scope="col">Turma</th>
+              <th scope="col">Nota</th>
+              <th scope="col">Data</th>
+              <th scope="col">Editar</th>
+          </tr>
+      </thead>
+          {% for avaliacao in lista_avaliacoes %}
+          <tbody>
+              <tr>
+                  <td>{{avaliacao.aluno.nome}}</td>
+                  <td>{{avaliacao.aluno.turma.nome}}</td>
+                  <td>{{avaliacao.nota}}</td>
+                  <td>{{avaliacao.data}}</td>
+                  <td><a href="">Editar</a></td>
+              </tr>
+          </tbody>
+          {% endfor %}
+  </table>
+</div>
+{% endblock %}
