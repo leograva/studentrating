@@ -33,10 +33,7 @@ class Aluno(models.Model):
         verbose_name_plural = "Alunos" # Define o nome plural personalizado
 
     def __str__(self):
-        field_values = []
-        for field in self._meta.get_fields():
-            field_values.append(str(getattr(self, field.name, ' ')))
-        return ' - '.join(field_values)
+        return f'{self.nome} - {self.turma} - {self.responsavel}'
 
 class Avaliacao(models.Model):
     aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)

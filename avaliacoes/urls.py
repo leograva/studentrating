@@ -18,4 +18,5 @@ urlpatterns = [
     path('avaliacoes',views.avaliacoes,name='avaliacoes'),
     path('professores',views.professores,name='professores'),
     path('alunos',views.alunos,name='alunos'),
+    path('relatorios',views.relatorios,name='relatorios')
     ]

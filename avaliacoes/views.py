@@ -2,7 +2,9 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render,redirect
 from django.contrib import messages
 from django.http import HttpResponse,HttpResponseRedirect
+from huggingface_hub import User
 from .models import Responsavel, Aluno, Avaliacao, Turma
+from django.contrib.auth import get_user_model
 #import matplotlib.pyplot as plt
 import io
 import urllib, base64
@@ -73,20 +75,33 @@ def avaliacoes(request):
     #if request.user.is_authenticated:
         lista_avaliacoes = Avaliacao.objects.all()
         lista_alunos = Aluno.objects.all()
-        return render(request,'avaliacoes.html',{'lista_avaliacoes':lista_avaliacoes, 'lista_alunos': lista_alunos})
+        lista_turmas = Turma.objects.all()
+        return render(request,'avaliacoes.html',{'lista_avaliacoes':lista_avaliacoes, 'lista_alunos': lista_alunos, 'lista_turmas':lista_turmas})
     #else:
     #    return render(request,'logoff.html')
 
 def professores(request):
     #if request.user.is_authenticated:
-        lista_professores = Responsavel.objects.all()
+        
+        User = get_user_model()
+        lista_professores = User.objects.all()
+        
+        print(lista_professores)
         return render(request,'professores.html',{'lista_professores':lista_professores})
     #else:
     #    return render(request,'logoff.html')
 
 def alunos(request):
     #if request.user.is_authenticated:
+        lista_turmas = Turma.objects.all()
         lista_alunos = Aluno.objects.all()
-        return render(request,'alunos.html',{'lista_alunos':lista_alunos})
+        return render(request,'alunos.html',{'lista_alunos':lista_alunos,'lista_turmas':lista_turmas})
+    #else:
+    #    return render(request,'logoff.html')
+
+def relatorios(request):
+    #if request.user.is_authenticated:
+        lista_turmas = Turma.objects.all()
+        return render(request,'relatorios.html',{'lista_turmas':lista_turmas})
     #else:
     #    return render(request,'logoff.html')

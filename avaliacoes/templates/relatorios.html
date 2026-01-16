@@ -1,23 +1,19 @@
 {% extends 'base.html' %}
 {% block content %}
-<h3><center> Alunos </center></h3>
+<h3><center> Relatórios de Avaliações </center></h3>
 <form action="" method="POST">{% csrf_token %}
-    <div class="form-group">
-      <label for="exampleFormControlInput1">Nome</label>
-      <input type="text" name="nome" class="form-control" id="exampleFormControlInput1" placeholder="Digite o nome da turma">
-    </div>
     <div class="form-group">
       <label for="exampleFormControlInput1">Turma</label>
       <select name="turma" class="form-control" id="exampleFormControlInput1">
-        <option value="-"> - </option>
         {% for turma in lista_turmas %}
           <option value="{{ turma.id }}">{{ turma.nome }}</option>
         {% endfor %}
       </select>
-    </div>
+    </div><br>
+    <br>
     <div class="form-group">
       <br>
-      <input type="submit" value="Cadastrar">
+      <input type="submit" value="Gerar relatório">
     </div>  
   </form>
   {% if messages %}
@@ -31,21 +27,21 @@
   <table class="table table-striped mb-1">
       <thead>
           <tr>
-              <th scope="col">Nome do aluno</th>
+              <th scope="col">Aluno</th>
               <th scope="col">Turma</th>
-              <th scope="col">Nome do responsável</th>
+              <th scope="col">Nota</th>
+              <th scope="col">Data</th>
               <th scope="col">Editar</th>
-              <th scope="col">Excluir</th>
           </tr>
       </thead>
-          {% for aluno in lista_alunos %}
+          {% for avaliacao in lista_avaliacoes %}
           <tbody>
               <tr>
-                  <td>{{ aluno.nome }}</td>
-                  <td>{{ aluno.turma.nome }}</td>
-                  <td>{{ aluno.responsavel.nome }}</td>
+                  <td>{{avaliacao.aluno.nome}}</td>
+                  <td>{{avaliacao.aluno.turma.nome}}</td>
+                  <td>{{avaliacao.nota}}</td>
+                  <td>{{avaliacao.data}}</td>
                   <td><a href="">Editar</a></td>
-                  <td><a href="">Excluir</a></td>
               </tr>
           </tbody>
           {% endfor %}

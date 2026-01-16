@@ -2,7 +2,16 @@
 {% block content %}
 <h3><center> Avaliações </center></h3>
 <form action="" method="POST">{% csrf_token %}
-    <div class="form-group">
+  <div class="form-group">
+      <label for="exampleFormControlInput1">Turma</label>
+      <select name="turma" class="form-control" id="exampleFormControlInput1">
+        {% for turma in lista_turmas %}
+          <option value="{{ turma.id }}">{{ turma.nome }}</option>
+        {% endfor %}
+      </select>
+    </div><br>
+    <div class="form-group">  
+  <div class="form-group">
       <label for="exampleFormControlInput1">Aluno</label>
       <select name="aluno" class="form-control" id="exampleFormControlInput1">
         {% for aluno in lista_alunos %}
@@ -51,6 +60,7 @@
               <th scope="col">Turma</th>
               <th scope="col">Nota</th>
               <th scope="col">Data</th>
+              <th scope="col">Detalhar</th>
               <th scope="col">Editar</th>
           </tr>
       </thead>
@@ -61,6 +71,7 @@
                   <td>{{avaliacao.aluno.turma.nome}}</td>
                   <td>{{avaliacao.nota}}</td>
                   <td>{{avaliacao.data}}</td>
+                  <td><a href="">Detalhar</a></td>
                   <td><a href="">Editar</a></td>
               </tr>
           </tbody>
