@@ -18,5 +18,7 @@ urlpatterns = [
     path('avaliacoes',views.avaliacoes,name='avaliacoes'),
     path('professores',views.professores,name='professores'),
     path('alunos',views.alunos,name='alunos'),
-    path('relatorios',views.relatorios,name='relatorios')
+    path('relatorios',views.relatorios,name='relatorios'),
+    path('guia_avaliacao',views.guia_avaliacao,name='guia_avaliacao'),
+    path('deletar_responsavel/<int:id>', views.deletar_responsavel, name='deletar_responsavel'),
     ]

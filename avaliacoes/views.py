@@ -37,15 +37,11 @@ def index(request):
         username = request.POST.get("username")
         password = request.POST.get("password")
 
-        print(username,password)
-
         usuario = authenticate(request, username=username, password=password)
         if usuario is not None:
             login(request, usuario)
-            print("autenticou")
             return redirect('menu')
         else:
-            print("nao autenticou")
             return HttpResponseRedirect('login')
     else:
         return render(request, 'index.html')
@@ -56,14 +52,39 @@ def menu(request):
         return render(request,'menu.html')
     else:
         return render(request,'logoff.html')
-    
+
+## Responsável    
 def responsaveis(request):
     #if request.user.is_authenticated:
+    if request.method == 'POST':
+            if request.POST.get('nome'):
+                responsavel = Responsavel()
+                responsavel.nome = request.POST.get('nome')
+                responsavel.email = request.POST.get('email')
+                responsavel.save()
+                lista_responsaveis = Responsavel.objects.all()
+                return render(request,'responsaveis.html',{'lista_responsaveis':lista_responsaveis})
+    else:
         lista_responsaveis = Responsavel.objects.all()
         return render(request,'responsaveis.html',{'lista_responsaveis':lista_responsaveis})
     #else:
     #    return render(request,'logoff.html')
 
+def deletar_responsavel(request,id):
+    #if request.user.is_authenticated:
+        try:
+            registro = Responsavel.objects.get(id =id)
+            registro.delete()
+            responsaveis = Responsavel.objects.all().order_by('nome')
+            return redirect(request.META['HTTP_REFERER'])
+        except:
+            messages.info(request, 'Não é possível excluir o responsável selecionado pois ele está sendo utilizado em algum aluno cadastrado')
+            #responsaveis = Responsavel.objects.all()
+            return render(request,'responsaveis.html')#,{'responsaveis':responsaveis})
+    #else:
+    #    return render(request,'logoff.html')
+    
+## Turma  
 def turmas(request):
     #if request.user.is_authenticated:
         lista_turmas = Turma.objects.all()
@@ -71,6 +92,7 @@ def turmas(request):
     #else:
     #    return render(request,'logoff.html')
 
+## Avaliação  
 def avaliacoes(request):
     #if request.user.is_authenticated:
         lista_avaliacoes = Avaliacao.objects.all()
@@ -80,17 +102,19 @@ def avaliacoes(request):
     #else:
     #    return render(request,'logoff.html')
 
+## Professor
 def professores(request):
-    #if request.user.is_authenticated:
+    #if request.user.is_authenticated: 
         
         User = get_user_model()
         lista_professores = User.objects.all()
         
-        print(lista_professores)
         return render(request,'professores.html',{'lista_professores':lista_professores})
     #else:
     #    return render(request,'logoff.html')
 
+
+## Aluno
 def alunos(request):
     #if request.user.is_authenticated:
         lista_turmas = Turma.objects.all()
@@ -98,6 +122,9 @@ def alunos(request):
         return render(request,'alunos.html',{'lista_alunos':lista_alunos,'lista_turmas':lista_turmas})
     #else:
     #    return render(request,'logoff.html')
+
+def guia_avaliacao(request):
+     return render(request,'guia_avaliacao.html')
 
 def relatorios(request):
     #if request.user.is_authenticated:

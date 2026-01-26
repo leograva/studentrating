@@ -4,7 +4,11 @@
 <form action="" method="POST">{% csrf_token %}
     <div class="form-group">
       <label for="exampleFormControlInput1">Nome</label>
-      <input type="text" name="nome" class="form-control" id="exampleFormControlInput1" placeholder="Digite o nome da turma">
+      <input type="text" name="nome" class="form-control" id="exampleFormControlInput1" placeholder="Digite o nome do responsável">
+    </div>
+    <div class="form-group">
+      <label for="exampleFormControlInput1">E-mail</label>
+      <input type="text" name="email" class="form-control" id="exampleFormControlInput1" placeholder="Digite o e-mail do responsável">
     </div>
     <div class="form-group">
       <br>
@@ -23,6 +27,7 @@
       <thead>
           <tr>
               <th scope="col">Nome do responsável</th>
+              <th scope="col">E-mail</th>
               <th scope="col">Excluir</th>
           </tr>
       </thead>
@@ -30,7 +35,8 @@
           <tbody>
               <tr>
                   <td>{{ responsavel.nome }}</td>
-                  <td><a href="">Excluir</a></td>
+                  <td>{{ responsavel.email }}</td>
+                   <td><a href="{% url 'deletar_responsavel' id=responsavel.id %}">Excluir</a></td>
               </tr>
           </tbody>
           {% endfor %}
