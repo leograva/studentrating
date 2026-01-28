@@ -6,8 +6,32 @@
       <label for="exampleFormControlInput1">Nome</label>
       <input type="text" name="nome" class="form-control" id="exampleFormControlInput1" placeholder="Digite o nome da turma">
     </div>
+    <br>
     <div class="form-group">
-      <br>
+      <label for="exampleFormControlInput1">E-mail</label>
+      <input type="text" name="nome" class="form-control" id="exampleFormControlInput1" placeholder="Digite o e-mail">
+    </div>
+    <br>
+    <div class="form-group">
+      <label for="exampleFormControlInput1">Senha</label>
+      <input type="password" name="senha" class="form-control" id="exampleFormControlInput1" placeholder="Digite a senha que o professor entrará pela primeira vez">
+    </div>
+    <br>
+    <div class="form-group">
+      <label for="exampleFormControlInput1">Matéria</label>
+      <select name="turma" class="form-control" id="exampleFormControlInput1">
+        <option value="-"> - </option>
+        <option value="Português"> Português </option>
+        <option value="Matemática"> Matemática </option>
+      </select>
+    </div>
+    <br>
+    <div class="form-group">
+      <label for="exampleFormControlInput1">Ativo</label> &nbsp;
+      <input type="checkbox">  
+    </div>
+    <br>
+    <div class="form-group">
       <input type="submit" value="Cadastrar">
     </div>  
   </form>
@@ -18,19 +42,30 @@
       </div>
   {% endfor %}
   {% endif %}
+<br>
+<div><center><h4>Listagem de Professores</h4></center></div>  
 <div class="table-wrapper-scroll-y my-custom-scrollbar">
   <table class="table table-striped mb-1">
       <thead>
           <tr>
-              <th scope="col">Nome da turma</th>
-              <th scope="col">Excluir</th>
+              <th scope="col">Nome do Professor</th>
+              <th scope="col">E-mail</th>
+              <th scope="col">Matéria</th>
+              <th scope="col">Status</th>
           </tr>
       </thead>
-          {% for professores in lista_professores %}
+          {% for professor in lista_professores %}
           <tbody>
               <tr>
-                  <td>{{ professor.user.first_name }}</td>
-                  <td><a href="">Excluir</a></td>
+                  <td>{{ professor.nome }}</td>
+                  <td>{{ professor.email }}</td>
+                  <td>{{ professor.materia}}</td>
+                  {% if professor.ativo == True %}
+                  <td>Ativo</td>
+                  {% else %}
+                  <td>Inativo</td>
+                  {% endif %}
+
               </tr>
           </tbody>
           {% endfor %}

@@ -2,8 +2,7 @@ from django.contrib.auth import authenticate, login
 from django.shortcuts import render,redirect
 from django.contrib import messages
 from django.http import HttpResponse,HttpResponseRedirect
-from huggingface_hub import User
-from .models import Responsavel, Aluno, Avaliacao, Turma
+from .models import Responsavel, Aluno, Avaliacao, Turma, Professor
 from django.contrib.auth import get_user_model
 #import matplotlib.pyplot as plt
 import io
@@ -106,8 +105,8 @@ def avaliacoes(request):
 def professores(request):
     #if request.user.is_authenticated: 
         
-        User = get_user_model()
-        lista_professores = User.objects.all()
+        
+        lista_professores = Professor.objects.all()
         
         return render(request,'professores.html',{'lista_professores':lista_professores})
     #else:
