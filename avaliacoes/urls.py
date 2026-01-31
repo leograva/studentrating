@@ -9,10 +9,9 @@ urlpatterns = [
 
     #logoff
     path('sair',views.sair,name='sair'),
-    
+
     #logout
     path('logoff',views.logoff,name='logoff'),
-
     path('responsaveis',views.responsaveis,name='responsaveis'),
     path('turmas',views.turmas,name='turmas'),
     path('avaliacoes',views.avaliacoes,name='avaliacoes'),

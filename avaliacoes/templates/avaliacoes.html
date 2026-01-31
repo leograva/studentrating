@@ -145,7 +145,7 @@
   </tbody>
 </table>
 <!-- MODAL EXCLUSÃO -->
-<div class="modal fade" id="modalExcluir" tabindex="-1">
+<div class="modal fade" name="modalExcluir" id="modalExcluir" tabindex="-1">
   <div class="modal-dialog">
     <form method="POST" action="{% url 'avaliacoes' %}"> <!-- certifique-se que a URL esteja correta -->
       {% csrf_token %}

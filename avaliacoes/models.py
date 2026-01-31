@@ -27,10 +27,10 @@ class Aluno(models.Model):
     nome = models.CharField(max_length=100)
     turma = models.ForeignKey(Turma, on_delete=models.PROTECT)
     responsavel = models.ForeignKey(Responsavel, on_delete=models.PROTECT)
-    
+
     class Meta:
         verbose_name = "Aluno"
-        verbose_name_plural = "Alunos" # Define o nome plural personalizado
+        verbose_name_plural = "Alunos"
 
     def __str__(self):
         return f'{self.nome} - {self.turma}'
