@@ -83,23 +83,42 @@ def deletar_responsavel(request,id):
     #else:
     #    return render(request,'logoff.html')
     
-## Turma  
 def turmas(request):
-    #if request.user.is_authenticated:
-        lista_turmas = Turma.objects.all()
-        return render(request,'turmas.html',{'lista_turmas':lista_turmas})
-    #else:
-    #    return render(request,'logoff.html')
+    if request.method == 'POST':
+        if request.POST.get('nome'):
+            turma = Turma()
+            turma.nome = request.POST.get('nome')
+            turma.save()
 
-## Avaliação  
+    lista_turmas = Turma.objects.all()
+    return render(request, 'turmas.html', {'lista_turmas': lista_turmas})
+
 def avaliacoes(request):
-    #if request.user.is_authenticated:
-        lista_avaliacoes = Avaliacao.objects.all()
-        lista_alunos = Aluno.objects.all()
-        lista_turmas = Turma.objects.all()
-        return render(request,'avaliacoes.html',{'lista_avaliacoes':lista_avaliacoes, 'lista_alunos': lista_alunos, 'lista_turmas':lista_turmas})
-    #else:
-    #    return render(request,'logoff.html')
+
+    if request.method == 'POST':
+        Avaliacao.objects.create(
+            turma_id=request.POST.get('turma'),
+            aluno_id=request.POST.get('aluno'),
+            nota_conhecimento=request.POST.get('nota_conhecimento'),
+            nota_habilidade=request.POST.get('nota_habilidade'),
+            nota_engajamento=request.POST.get('nota_engajamento'),
+            nota_competencia=request.POST.get('nota_competencia'),
+            comentario=request.POST.get('comentario')
+        )
+
+    lista_turmas = Turma.objects.all()
+    lista_alunos = Aluno.objects.select_related('turma').all()
+    lista_avaliacoes = Avaliacao.objects.select_related('aluno', 'turma').all()
+
+    return render(
+        request,
+        'avaliacoes.html',
+        {
+            'lista_turmas': lista_turmas,
+            'lista_alunos': lista_alunos,
+            'lista_avaliacoes': lista_avaliacoes
+        }
+    )
 
 def professores(request):
     if request.method == 'POST':
@@ -117,14 +136,27 @@ def professores(request):
     lista_professores = Professor.objects.all()
     return render(request, 'professores.html', {'lista_professores': lista_professores})
 
-## Aluno
 def alunos(request):
-    #if request.user.is_authenticated:
-        lista_turmas = Turma.objects.all()
-        lista_alunos = Aluno.objects.all()
-        return render(request,'alunos.html',{'lista_alunos':lista_alunos,'lista_turmas':lista_turmas})
-    #else:
-    #    return render(request,'logoff.html')
+    if request.method == 'POST':
+        Aluno.objects.create(
+            nome=request.POST.get('nome'),
+            turma_id=request.POST.get('turma'),
+            responsavel_id=request.POST.get('responsavel')
+        )
+
+    lista_alunos = Aluno.objects.select_related('turma', 'responsavel').all()
+    lista_turmas = Turma.objects.all()
+    lista_responsaveis = Responsavel.objects.all()
+
+    return render(
+        request,
+        'alunos.html',
+        {
+            'lista_alunos': lista_alunos,
+            'lista_turmas': lista_turmas,
+            'lista_responsaveis': lista_responsaveis
+        }
+    )
 
 def guia_avaliacao(request):
      return render(request,'guia_avaliacao.html')

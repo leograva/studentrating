@@ -61,18 +61,13 @@ class Professor(models.Model):
         return self.nome
 
 class Avaliacao(models.Model):
+    turma = models.ForeignKey(Turma, on_delete=models.CASCADE)
     aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)
-    professor = models.ForeignKey(Professor, on_delete=models.CASCADE)
-    nota_conhecimento = models.DecimalField(max_digits=1, decimal_places=0)
-    nota_habilidades = models.DecimalField(max_digits=1, decimal_places=0)
-    nota_engajamento = models.DecimalField(max_digits=1, decimal_places=0)
-    nota_competencias = models.DecimalField(max_digits=1, decimal_places=0)
+
+    nota_conhecimento = models.IntegerField()
+    nota_habilidade = models.IntegerField()
+    nota_engajamento = models.IntegerField()
+    nota_competencia = models.IntegerField()
+
     comentario = models.TextField(blank=True, null=True)
-    data = models.DateField()
-
-    class Meta:
-        verbose_name = "Avaliação"
-        verbose_name_plural = "Avaliações" # Define o nome plural personalizado
-
-    def __str__(self):
-        return f'{self.aluno.nome} - {self.aluno.turma} - {self.data}'
+    data_avaliacao = models.DateTimeField(auto_now_add=True)
