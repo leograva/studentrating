@@ -101,17 +101,21 @@ def avaliacoes(request):
     #else:
     #    return render(request,'logoff.html')
 
-## Professor
 def professores(request):
-    #if request.user.is_authenticated: 
-        
-        
-        lista_professores = Professor.objects.all()
-        
-        return render(request,'professores.html',{'lista_professores':lista_professores})
-    #else:
-    #    return render(request,'logoff.html')
+    if request.method == 'POST':
+        professor = Professor()
+        professor.nome = request.POST.get('nome')
+        professor.email = request.POST.get('email')
+        professor.senha = request.POST.get('senha')
+        professor.materia = request.POST.get('materia')
 
+        # checkbox: se existir no POST → True, senão → False
+        professor.ativo = True if request.POST.get('ativo') == 'on' else False
+
+        professor.save()
+
+    lista_professores = Professor.objects.all()
+    return render(request, 'professores.html', {'lista_professores': lista_professores})
 
 ## Aluno
 def alunos(request):

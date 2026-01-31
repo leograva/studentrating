@@ -1,40 +1,50 @@
 {% extends 'base.html' %}
 {% block content %}
-<h3><center> Professores </center></h3>
-<form action="" method="POST">{% csrf_token %}
-    <div class="form-group">
-      <label for="exampleFormControlInput1">Nome</label>
-      <input type="text" name="nome" class="form-control" id="exampleFormControlInput1" placeholder="Digite o nome da turma">
-    </div>
-    <br>
-    <div class="form-group">
-      <label for="exampleFormControlInput1">E-mail</label>
-      <input type="text" name="nome" class="form-control" id="exampleFormControlInput1" placeholder="Digite o e-mail">
-    </div>
-    <br>
-    <div class="form-group">
-      <label for="exampleFormControlInput1">Senha</label>
-      <input type="password" name="senha" class="form-control" id="exampleFormControlInput1" placeholder="Digite a senha que o professor entrará pela primeira vez">
-    </div>
-    <br>
-    <div class="form-group">
-      <label for="exampleFormControlInput1">Matéria</label>
-      <select name="turma" class="form-control" id="exampleFormControlInput1">
-        <option value="-"> - </option>
-        <option value="Português"> Português </option>
-        <option value="Matemática"> Matemática </option>
-      </select>
-    </div>
-    <br>
-    <div class="form-group">
-      <label for="exampleFormControlInput1">Ativo</label> &nbsp;
-      <input type="checkbox">  
-    </div>
-    <br>
-    <div class="form-group">
-      <input type="submit" value="Cadastrar">
-    </div>  
-  </form>
+<h3><center> Professores </center></h3><form action="" method="POST">
+  {% csrf_token %}
+
+  <div class="form-group">
+    <label>Nome</label>
+    <input type="text" name="nome" class="form-control" placeholder="Digite o nome do professor">
+  </div>
+
+  <br>
+
+  <div class="form-group">
+    <label>E-mail</label>
+    <input type="email" name="email" class="form-control" placeholder="Digite o e-mail">
+  </div>
+
+  <br>
+
+  <div class="form-group">
+    <label>Senha</label>
+    <input type="password" name="senha" class="form-control" placeholder="Senha inicial">
+  </div>
+
+  <br>
+
+  <div class="form-group">
+    <label>Matéria</label>
+    <select name="materia" class="form-control">
+      <option value=""> - </option>
+      <option value="Português">Português</option>
+      <option value="Matemática">Matemática</option>
+    </select>
+  </div>
+
+  <br>
+
+  <div class="form-group">
+    <label>Ativo</label>
+    <input type="checkbox" name="ativo">
+  </div>
+
+  <br>
+
+  <input type="submit" value="Cadastrar" class="btn btn-primary">
+</form>
+
   {% if messages %}
   {% for m in messages %}
       <div class="alert alert-warning" role="alert">
