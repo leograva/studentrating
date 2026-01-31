@@ -1,5 +1,5 @@
 from django.contrib.auth import authenticate, login
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.contrib import messages
 from django.http import HttpResponse,HttpResponseRedirect
 from .models import Responsavel, Aluno, Avaliacao, Turma, Professor
@@ -93,32 +93,51 @@ def turmas(request):
     lista_turmas = Turma.objects.all()
     return render(request, 'turmas.html', {'lista_turmas': lista_turmas})
 
-def avaliacoes(request):
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Avaliacao, Turma, Aluno
 
+
+def avaliacoes(request):
     if request.method == 'POST':
-        Avaliacao.objects.create(
-            turma_id=request.POST.get('turma'),
-            aluno_id=request.POST.get('aluno'),
-            nota_conhecimento=request.POST.get('nota_conhecimento'),
-            nota_habilidade=request.POST.get('nota_habilidade'),
-            nota_engajamento=request.POST.get('nota_engajamento'),
-            nota_competencia=request.POST.get('nota_competencia'),
-            comentario=request.POST.get('comentario')
-        )
+        # Excluir avaliação
+        if 'excluir_avaliacao' in request.POST:
+            avaliacao_id = request.POST.get('avaliacao_id')
+            Avaliacao.objects.filter(id=avaliacao_id).delete()
+        
+        # Criar ou atualizar avaliação
+        else:
+            avaliacao_id = request.POST.get('avaliacao_id')
+            if avaliacao_id:  # Atualizar
+                avaliacao = Avaliacao.objects.get(id=avaliacao_id)
+                avaliacao.turma_id = request.POST.get('turma')
+                avaliacao.aluno_id = request.POST.get('aluno')
+                avaliacao.nota_conhecimento = request.POST.get('nota_conhecimento')
+                avaliacao.nota_habilidade = request.POST.get('nota_habilidade')
+                avaliacao.nota_engajamento = request.POST.get('nota_engajamento')
+                avaliacao.nota_competencia = request.POST.get('nota_competencia')
+                avaliacao.comentario = request.POST.get('comentario')
+                avaliacao.save()
+            else:  # Criar novo
+                Avaliacao.objects.create(
+                    turma_id=request.POST.get('turma'),
+                    aluno_id=request.POST.get('aluno'),
+                    nota_conhecimento=request.POST.get('nota_conhecimento'),
+                    nota_habilidade=request.POST.get('nota_habilidade'),
+                    nota_engajamento=request.POST.get('nota_engajamento'),
+                    nota_competencia=request.POST.get('nota_competencia'),
+                    comentario=request.POST.get('comentario')
+                )
 
     lista_turmas = Turma.objects.all()
     lista_alunos = Aluno.objects.select_related('turma').all()
     lista_avaliacoes = Avaliacao.objects.select_related('aluno', 'turma').all()
 
-    return render(
-        request,
-        'avaliacoes.html',
-        {
-            'lista_turmas': lista_turmas,
-            'lista_alunos': lista_alunos,
-            'lista_avaliacoes': lista_avaliacoes
-        }
-    )
+    return render(request, 'avaliacoes.html', {
+        'lista_turmas': lista_turmas,
+        'lista_alunos': lista_alunos,
+        'lista_avaliacoes': lista_avaliacoes
+    })
+
 
 def professores(request):
     if request.method == 'POST':
@@ -157,9 +176,6 @@ def alunos(request):
             'lista_responsaveis': lista_responsaveis
         }
     )
-
-def guia_avaliacao(request):
-     return render(request,'guia_avaliacao.html')
 
 def relatorios(request):
     #if request.user.is_authenticated:

@@ -5,6 +5,7 @@
 
 <form method="POST">
   {% csrf_token %}
+  <input type="hidden" name="avaliacao_id" id="avaliacao_id">
 
   <!-- TURMA -->
   <div class="form-group">
@@ -34,60 +35,60 @@
 
   <br>
 
-  <!-- NOTAS -->
+  <!-- NOTA CONHECIMENTO -->
   <div class="form-group">
     <label>Nota de Conhecimento</label>
-    <select name="nota_conhecimento" class="form-control" required>
+    <select name="nota_conhecimento" id="nota_conhecimento" class="form-control" required>
       {% for i in "12345678910"|make_list %}
         <option value="{{ forloop.counter }}">{{ forloop.counter }}</option>
       {% endfor %}
     </select>
   </div>
-
   <br>
 
+  <!-- NOTA HABILIDADE -->
   <div class="form-group">
     <label>Nota de Habilidade</label>
-    <select name="nota_habilidade" class="form-control" required>
+    <select name="nota_habilidade" id="nota_habilidade" class="form-control" required>
       {% for i in "12345678910"|make_list %}
         <option value="{{ forloop.counter }}">{{ forloop.counter }}</option>
       {% endfor %}
     </select>
   </div>
-
   <br>
 
+  <!-- NOTA ENGAJAMENTO -->
   <div class="form-group">
     <label>Nota de Engajamento</label>
-    <select name="nota_engajamento" class="form-control" required>
+    <select name="nota_engajamento" id="nota_engajamento" class="form-control" required>
       {% for i in "12345678910"|make_list %}
         <option value="{{ forloop.counter }}">{{ forloop.counter }}</option>
       {% endfor %}
     </select>
   </div>
-
   <br>
 
+  <!-- NOTA COMPETÊNCIA -->
   <div class="form-group">
     <label>Nota de Competência</label>
-    <select name="nota_competencia" class="form-control" required>
+    <select name="nota_competencia" id="nota_competencia" class="form-control" required>
       {% for i in "12345678910"|make_list %}
         <option value="{{ forloop.counter }}">{{ forloop.counter }}</option>
       {% endfor %}
     </select>
   </div>
-
   <br>
 
   <!-- COMENTÁRIO -->
   <div class="form-group">
     <label>Comentário</label>
-    <textarea name="comentario" rows="4" class="form-control"></textarea>
+    <textarea name="comentario" id="comentario" rows="4" class="form-control"></textarea>
   </div>
-
   <br>
 
-  <button type="submit" class="btn btn-primary">Salvar Avaliação</button>
+  <button type="submit" name="salvar_avaliacao" id="btnSalvar" class="btn btn-primary">
+    Salvar Avaliação
+  </button>
 </form>
 
 <hr>
@@ -103,27 +104,72 @@
       <th>Habilidade</th>
       <th>Engajamento</th>
       <th>Competência</th>
+      <th>Ações</th>
     </tr>
   </thead>
   <tbody>
     {% for a in lista_avaliacoes %}
-    <tr>
-      <td>{{ a.turma.nome }}</td>
-      <td>{{ a.aluno.nome }}</td>
-      <td>{{ a.nota_conhecimento }}</td>
-      <td>{{ a.nota_habilidade }}</td>
-      <td>{{ a.nota_engajamento }}</td>
-      <td>{{ a.nota_competencia }}</td>
-    </tr>
+      <tr>
+        <td>{{ a.turma.nome }}</td>
+        <td>{{ a.aluno.nome }}</td>
+        <td>{{ a.nota_conhecimento }}</td>
+        <td>{{ a.nota_habilidade }}</td>
+        <td>{{ a.nota_engajamento }}</td>
+        <td>{{ a.nota_competencia }}</td>
+        <td>
+          <button class="btn btn-sm btn-warning"
+            onclick="editarAvaliacao(
+              '{{ a.id }}',
+              '{{ a.turma.id }}',
+              '{{ a.aluno.id }}',
+              '{{ a.nota_conhecimento }}',
+              '{{ a.nota_habilidade }}',
+              '{{ a.nota_engajamento }}',
+              '{{ a.nota_competencia }}',
+              `{{ a.comentario|default:'' }}`
+            )">
+            Editar
+          </button>
+
+          <button class="btn btn-sm btn-danger"
+            onclick="abrirModalExcluir('{{ a.id }}')">
+            Excluir
+          </button>
+        </td>
+      </tr>
     {% empty %}
-    <tr>
-      <td colspan="6" class="text-center">Nenhuma avaliação cadastrada</td>
-    </tr>
+      <tr>
+        <td colspan="7" class="text-center">Nenhuma avaliação cadastrada</td>
+      </tr>
     {% endfor %}
   </tbody>
 </table>
+<!-- MODAL EXCLUSÃO -->
+<div class="modal fade" id="modalExcluir" tabindex="-1">
+  <div class="modal-dialog">
+    <form method="POST" action="{% url 'avaliacoes' %}"> <!-- certifique-se que a URL esteja correta -->
+      {% csrf_token %}
+      <input type="hidden" name="avaliacao_id" id="avaliacaoExcluir">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirmar exclusão</h5>
+        </div>
+        <div class="modal-body">
+          Deseja realmente excluir esta avaliação?
+        </div>
+        <div class="modal-footer">
+          <button type="submit" name="excluir_avaliacao" class="btn btn-danger">
+            Excluir
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 
-<!-- JS: FILTRO DE ALUNOS POR TURMA -->
 <script>
 document.getElementById('turma').addEventListener('change', function () {
     const turmaSelecionada = this.value;
@@ -131,13 +177,29 @@ document.getElementById('turma').addEventListener('change', function () {
 
     alunos.forEach(option => {
         if (!option.dataset.turma) return;
-
-        option.style.display =
-            option.dataset.turma === turmaSelecionada ? 'block' : 'none';
+        option.style.display = option.dataset.turma === turmaSelecionada ? 'block' : 'none';
     });
 
     document.getElementById('aluno').value = '';
 });
+
+function editarAvaliacao(id, turma, aluno, nc, nh, ne, ncomp, comentario) {
+  document.getElementById('avaliacao_id').value = id;
+  document.getElementById('turma').value = turma;
+  document.getElementById('aluno').value = aluno;
+  document.getElementById('nota_conhecimento').value = nc;
+  document.getElementById('nota_habilidade').value = nh;
+  document.getElementById('nota_engajamento').value = ne;
+  document.getElementById('nota_competencia').value = ncomp;
+  document.getElementById('comentario').value = comentario;
+  document.getElementById('btnSalvar').innerText = 'Atualizar Avaliação';
+  window.scrollTo(0, 0);
+}
+
+function abrirModalExcluir(id) {
+  document.getElementById('avaliacaoExcluir').value = id;
+  new bootstrap.Modal(document.getElementById('modalExcluir')).show();
+}
 </script>
 
 {% endblock %}
