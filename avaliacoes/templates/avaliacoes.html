@@ -39,7 +39,7 @@
   <div class="form-group">
     <label>Nota de Conhecimento</label>
     <select name="nota_conhecimento" id="nota_conhecimento" class="form-control" required>
-      {% for i in "12345678910"|make_list %}
+      {% for i in "1234567891"|make_list %}
         <option value="{{ forloop.counter }}">{{ forloop.counter }}</option>
       {% endfor %}
     </select>
@@ -50,7 +50,7 @@
   <div class="form-group">
     <label>Nota de Habilidade</label>
     <select name="nota_habilidade" id="nota_habilidade" class="form-control" required>
-      {% for i in "12345678910"|make_list %}
+      {% for i in "1234567891"|make_list %}
         <option value="{{ forloop.counter }}">{{ forloop.counter }}</option>
       {% endfor %}
     </select>
@@ -61,7 +61,7 @@
   <div class="form-group">
     <label>Nota de Engajamento</label>
     <select name="nota_engajamento" id="nota_engajamento" class="form-control" required>
-      {% for i in "12345678910"|make_list %}
+      {% for i in "1234567891"|make_list %}
         <option value="{{ forloop.counter }}">{{ forloop.counter }}</option>
       {% endfor %}
     </select>
@@ -72,7 +72,7 @@
   <div class="form-group">
     <label>Nota de Competência</label>
     <select name="nota_competencia" id="nota_competencia" class="form-control" required>
-      {% for i in "12345678910"|make_list %}
+      {% for i in "1234567891"|make_list %}
         <option value="{{ forloop.counter }}">{{ forloop.counter }}</option>
       {% endfor %}
     </select>
@@ -85,6 +85,10 @@
     <textarea name="comentario" id="comentario" rows="4" class="form-control"></textarea>
   </div>
   <br>
+
+  <button onclick="ajustarTexto" name="salvar_avaliacao" id="btnAjuste" class="btn btn-primary">
+    Ajustar texto
+  </button>
 
   <button type="submit" name="salvar_avaliacao" id="btnSalvar" class="btn btn-primary">
     Salvar Avaliação
@@ -182,6 +186,10 @@ document.getElementById('turma').addEventListener('change', function () {
 
     document.getElementById('aluno').value = '';
 });
+
+function ajustarTexto(texto){
+  alert('');
+}
 
 function editarAvaliacao(id, turma, aluno, nc, nh, ne, ncomp, comentario) {
   document.getElementById('avaliacao_id').value = id;
