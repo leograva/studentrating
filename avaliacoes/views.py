@@ -1,16 +1,10 @@
-from django.contrib.auth import authenticate, login
-from django.shortcuts import render,redirect,get_object_or_404
-from django.contrib import messages
+from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render,redirect
 from django.http import HttpResponse,HttpResponseRedirect
 from .models import Responsavel, Aluno, Avaliacao, Turma, Professor
-from django.contrib.auth import get_user_model
 from django.contrib.auth.models import User
-#import matplotlib.pyplot as plt
 import io
-import urllib, base64
-from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
-from django.contrib.auth import authenticate, login, logout
 from django.http import JsonResponse
 from django.utils import timezone
 
@@ -22,6 +16,7 @@ try:
     REPORTLAB_AVAILABLE = True
 except Exception:
     REPORTLAB_AVAILABLE = False
+
 # Create your views here.
 def logoff(request):
     return HttpResponseRedirect('login')

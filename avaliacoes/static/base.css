@@ -5,8 +5,9 @@
     left: 0;
     overflow-x: hidden;
     overflow-y: auto;
-    background: #2e2e2e;
+    background: linear-gradient(135deg,#303336 0%,#1e1f20 100%);
     color: #fff;
+    border-right: 1px solid rgba(255,255,255,0.06);
   }
   
   .content-container {
@@ -16,8 +17,8 @@
   .sidebar-logo {
     padding: 10px 15px 10px 30px;
     font-size: 20px;
-    background-color: #2e2e2e;
-    color:#f3c3aa;
+    background-color: transparent;
+    color: #fff;
   }
   
   .sidebar-navigation {
@@ -57,9 +58,38 @@
   .sidebar-navigation li a:active,
   .sidebar-navigation li a:hover,
   .sidebar-navigation li a:focus {
-    background-color: #fd6f4b;
+    background-color: rgba(255,255,255,0.06);
     text-decoration: none;
     outline: none;
+  }
+
+  /* Regras mais específicas para garantir consistência com o tema */
+  .sidebar-container .sidebar-navigation li a:hover,
+  .sidebar-container .sidebar-navigation li a:focus,
+  .sidebar-container .sidebar-navigation li a.active {
+    background-color: rgba(255,255,255,0.06) !important;
+    color: #fff !important;
+  }
+  .sidebar-container .sidebar-navigation li a:hover .fa,
+  .sidebar-container .sidebar-navigation li a:focus .fa,
+  .sidebar-container .sidebar-navigation li a.active .fa {
+    color: #fff !important;
+  }
+
+  /* Reforçar contra outras regras (imagem de fundo, bordas, sombras) */
+  .sidebar-container .sidebar-navigation li > a:hover,
+  .sidebar-container .sidebar-navigation li > a:focus,
+  .sidebar-container .sidebar-navigation li > a.active {
+    background-image: none !important;
+    background-color: rgba(255,255,255,0.06) !important;
+    border: none !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+
+  /* Garantir ícones em branco */
+  .sidebar-container .sidebar-navigation li > a .fa {
+    color: rgba(255,255,255,0.9) !important;
   }
   
   .body{text-decoration: none;}
@@ -78,12 +108,14 @@
   
   .sidebar-navigation li:hover::before {
     width: 100%;
+    background-color: rgba(255,255,255,0.06);
   }
   
   .sidebar-navigation .header {
     font-size: 12px;
     text-transform: uppercase;
-    background-color: #fd6f4b;
+    background-color: transparent;
+    color: rgba(255,255,255,0.9);
     padding: 10px 15px 10px 30px;
   }
   
