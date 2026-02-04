@@ -52,43 +52,55 @@ def menu(request):
     else:
         return render(request,'logoff.html')
 
-## Responsável    
 def responsaveis(request):
     #if request.user.is_authenticated:
     if request.method == 'POST':
-            if request.POST.get('nome'):
+        # Excluir responsável
+        if 'excluir_responsavel' in request.POST:
+            responsavel_id = request.POST.get('responsavel_id')
+            try:
+                Responsavel.objects.get(id=responsavel_id).delete()
+            except:
+                messages.info(request, 'Não é possível excluir o responsável selecionado pois ele está sendo utilizado em algum aluno cadastrado')
+        # Criar ou atualizar responsável
+        else:
+            responsavel_id = request.POST.get('responsavel_id')
+            if responsavel_id:  # Atualizar
+                responsavel = Responsavel.objects.get(id=responsavel_id)
+                responsavel.nome = request.POST.get('nome')
+                responsavel.email = request.POST.get('email')
+                responsavel.save()
+            else:  # Criar novo
                 responsavel = Responsavel()
                 responsavel.nome = request.POST.get('nome')
                 responsavel.email = request.POST.get('email')
                 responsavel.save()
-                lista_responsaveis = Responsavel.objects.all()
-                return render(request,'responsaveis.html',{'lista_responsaveis':lista_responsaveis})
-    else:
-        lista_responsaveis = Responsavel.objects.all()
-        return render(request,'responsaveis.html',{'lista_responsaveis':lista_responsaveis})
+    
+    lista_responsaveis = Responsavel.objects.all()
+    return render(request,'responsaveis.html',{'lista_responsaveis':lista_responsaveis})
     #else:
     #    return render(request,'logoff.html')
 
-def deletar_responsavel(request,id):
-    #if request.user.is_authenticated:
-        try:
-            registro = Responsavel.objects.get(id =id)
-            registro.delete()
-            responsaveis = Responsavel.objects.all().order_by('nome')
-            return redirect(request.META['HTTP_REFERER'])
-        except:
-            messages.info(request, 'Não é possível excluir o responsável selecionado pois ele está sendo utilizado em algum aluno cadastrado')
-            #responsaveis = Responsavel.objects.all()
-            return render(request,'responsaveis.html')#,{'responsaveis':responsaveis})
-    #else:
-    #    return render(request,'logoff.html')
-    
 def turmas(request):
     if request.method == 'POST':
-        if request.POST.get('nome'):
-            turma = Turma()
-            turma.nome = request.POST.get('nome')
-            turma.save()
+        # Excluir turma
+        if 'excluir_turma' in request.POST:
+            turma_id = request.POST.get('turma_id')
+            try:
+                Turma.objects.get(id=turma_id).delete()
+            except:
+                messages.info(request, 'Não é possível excluir a turma selecionada pois ela está sendo utilizada')
+        # Criar ou atualizar turma
+        else:
+            turma_id = request.POST.get('turma_id')
+            if turma_id:  # Atualizar
+                turma = Turma.objects.get(id=turma_id)
+                turma.nome = request.POST.get('nome')
+                turma.save()
+            else:  # Criar novo
+                turma = Turma()
+                turma.nome = request.POST.get('nome')
+                turma.save()
 
     lista_turmas = Turma.objects.all()
     return render(request, 'turmas.html', {'lista_turmas': lista_turmas})
@@ -141,27 +153,60 @@ def avaliacoes(request):
 
 def professores(request):
     if request.method == 'POST':
-        professor = Professor()
-        professor.nome = request.POST.get('nome')
-        professor.email = request.POST.get('email')
-        professor.senha = request.POST.get('senha')
-        professor.materia = request.POST.get('materia')
-
-        # checkbox: se existir no POST → True, senão → False
-        professor.ativo = True if request.POST.get('ativo') == 'on' else False
-
-        professor.save()
+        # Excluir professor
+        if 'excluir_professor' in request.POST:
+            professor_id = request.POST.get('professor_id')
+            try:
+                Professor.objects.get(id=professor_id).delete()
+            except:
+                messages.info(request, 'Não é possível excluir o professor selecionado')
+        # Criar ou atualizar professor
+        else:
+            professor_id = request.POST.get('professor_id')
+            if professor_id:  # Atualizar
+                professor = Professor.objects.get(id=professor_id)
+                professor.nome = request.POST.get('nome')
+                professor.email = request.POST.get('email')
+                professor.senha = request.POST.get('senha')
+                professor.materia = request.POST.get('materia')
+                professor.ativo = True if request.POST.get('ativo') == 'on' else False
+                professor.save()
+            else:  # Criar novo
+                professor = Professor()
+                professor.nome = request.POST.get('nome')
+                professor.email = request.POST.get('email')
+                professor.senha = request.POST.get('senha')
+                professor.materia = request.POST.get('materia')
+                professor.ativo = True if request.POST.get('ativo') == 'on' else False
+                professor.save()
 
     lista_professores = Professor.objects.all()
     return render(request, 'professores.html', {'lista_professores': lista_professores})
 
 def alunos(request):
     if request.method == 'POST':
-        Aluno.objects.create(
-            nome=request.POST.get('nome'),
-            turma_id=request.POST.get('turma'),
-            responsavel_id=request.POST.get('responsavel')
-        )
+        # Excluir aluno
+        if 'excluir_aluno' in request.POST:
+            aluno_id = request.POST.get('aluno_id')
+            try:
+                Aluno.objects.get(id=aluno_id).delete()
+            except:
+                messages.info(request, 'Não é possível excluir o aluno selecionado')
+        # Criar ou atualizar aluno
+        else:
+            aluno_id = request.POST.get('aluno_id')
+            if aluno_id:  # Atualizar
+                aluno = Aluno.objects.get(id=aluno_id)
+                aluno.nome = request.POST.get('nome')
+                aluno.turma_id = request.POST.get('turma')
+                aluno.responsavel_id = request.POST.get('responsavel')
+                aluno.save()
+            else:  # Criar novo
+                Aluno.objects.create(
+                    nome=request.POST.get('nome'),
+                    turma_id=request.POST.get('turma'),
+                    responsavel_id=request.POST.get('responsavel')
+                )
 
     lista_alunos = Aluno.objects.select_related('turma', 'responsavel').all()
     lista_turmas = Turma.objects.all()

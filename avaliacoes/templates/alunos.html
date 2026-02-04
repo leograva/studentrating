@@ -5,6 +5,7 @@
 
 <form method="POST">
   {% csrf_token %}
+  <input type="hidden" name="aluno_id" id="aluno_id">
 
   <!-- NOME -->
   <div class="form-group">
@@ -12,6 +13,7 @@
     <input
       type="text"
       name="nome"
+      id="nome"
       class="form-control"
       placeholder="Digite o nome do aluno"
       required
@@ -23,7 +25,7 @@
   <!-- TURMA -->
   <div class="form-group">
     <label>Turma</label>
-    <select name="turma" class="form-control" required>
+    <select name="turma" id="turma" class="form-control" required>
       <option value="">Selecione a turma</option>
       {% for turma in lista_turmas %}
         <option value="{{ turma.id }}">{{ turma.nome }}</option>
@@ -36,7 +38,7 @@
   <!-- RESPONSÁVEL -->
   <div class="form-group">
     <label>Responsável</label>
-    <select name="responsavel" class="form-control" required>
+    <select name="responsavel" id="responsavel" class="form-control" required>
       <option value="">Selecione o responsável</option>
       {% for r in lista_responsaveis %}
         <option value="{{ r.id }}">{{ r.nome }}</option>
@@ -46,7 +48,7 @@
 
   <br>
 
-  <button type="submit" class="btn btn-primary">Cadastrar</button>
+  <button type="submit" name="salvar_aluno" id="btnSalvar" class="btn btn-primary">Cadastrar</button>
 </form>
 
 <hr>
@@ -59,6 +61,7 @@
       <th>Nome</th>
       <th>Turma</th>
       <th>Responsável</th>
+      <th>Ações</th>
     </tr>
   </thead>
   <tbody>
@@ -67,13 +70,71 @@
         <td>{{ aluno.nome }}</td>
         <td>{{ aluno.turma.nome }}</td>
         <td>{{ aluno.responsavel.nome }}</td>
+        <td>
+          <button class="btn btn-sm btn-warning"
+            onclick="editarAluno(
+              '{{ aluno.id }}',
+              '{{ aluno.nome }}',
+              '{{ aluno.turma.id }}',
+              '{{ aluno.responsavel.id }}'
+            )">
+            Editar
+          </button>
+
+          <button class="btn btn-sm btn-danger"
+            onclick="abrirModalExcluir('{{ aluno.id }}')">
+            Excluir
+          </button>
+        </td>
       </tr>
     {% empty %}
       <tr>
-        <td colspan="3" class="text-center">Nenhum aluno cadastrado</td>
+        <td colspan="4" class="text-center">Nenhum aluno cadastrado</td>
       </tr>
     {% endfor %}
   </tbody>
 </table>
+
+<!-- MODAL EXCLUSÃO -->
+<div class="modal fade" name="modalExcluir" id="modalExcluir" tabindex="-1">
+  <div class="modal-dialog">
+    <form method="POST" action="{% url 'alunos' %}">
+      {% csrf_token %}
+      <input type="hidden" name="aluno_id" id="alunoExcluir">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirmar exclusão</h5>
+        </div>
+        <div class="modal-body">
+          Deseja realmente excluir este aluno?
+        </div>
+        <div class="modal-footer">
+          <button type="submit" name="excluir_aluno" class="btn btn-danger">
+            Excluir
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function editarAluno(id, nome, turma, responsavel) {
+  document.getElementById('aluno_id').value = id;
+  document.getElementById('nome').value = nome;
+  document.getElementById('turma').value = turma;
+  document.getElementById('responsavel').value = responsavel;
+  document.getElementById('btnSalvar').innerText = 'Atualizar Aluno';
+  window.scrollTo(0, 0);
+}
+
+function abrirModalExcluir(id) {
+  document.getElementById('alunoExcluir').value = id;
+  new bootstrap.Modal(document.getElementById('modalExcluir')).show();
+}
+</script>
 
 {% endblock %}

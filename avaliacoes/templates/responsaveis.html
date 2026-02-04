@@ -1,20 +1,25 @@
 {% extends 'base.html' %}
 {% block content %}
 <h3><center> Responsáveis </center></h3>
-<form action="" method="POST">{% csrf_token %}
-    <div class="form-group">
-      <label for="exampleFormControlInput1">Nome</label>
-      <input type="text" name="nome" class="form-control" id="exampleFormControlInput1" placeholder="Digite o nome do responsável">
-    </div>
-    <div class="form-group">
-      <label for="exampleFormControlInput1">E-mail</label>
-      <input type="text" name="email" class="form-control" id="exampleFormControlInput1" placeholder="Digite o e-mail do responsável">
-    </div>
-    <div class="form-group">
-      <br>
-      <input type="submit" value="Cadastrar">
-    </div>  
-  </form>
+<form action="" method="POST">
+  {% csrf_token %}
+  <input type="hidden" name="responsavel_id" id="responsavel_id">
+
+  <div class="form-group">
+    <label for="exampleFormControlInput1">Nome</label>
+    <input type="text" name="nome" id="nome" class="form-control" id="exampleFormControlInput1" placeholder="Digite o nome do responsável">
+  </div>
+
+  <div class="form-group">
+    <label for="exampleFormControlInput1">E-mail</label>
+    <input type="text" name="email" id="email" class="form-control" id="exampleFormControlInput1" placeholder="Digite o e-mail do responsável">
+  </div>
+
+  <div class="form-group">
+    <br>
+    <input type="submit" name="salvar_responsavel" id="btnSalvar" value="Cadastrar">
+  </div>  
+</form>
   {% if messages %}
   {% for m in messages %}
       <div class="alert alert-warning" role="alert">
@@ -28,7 +33,7 @@
           <tr>
               <th scope="col">Nome do responsável</th>
               <th scope="col">E-mail</th>
-              <th scope="col">Excluir</th>
+              <th scope="col">Ações</th>
           </tr>
       </thead>
           {% for responsavel in lista_responsaveis %}
@@ -36,10 +41,66 @@
               <tr>
                   <td>{{ responsavel.nome }}</td>
                   <td>{{ responsavel.email }}</td>
-                   <td><a href="{% url 'deletar_responsavel' id=responsavel.id %}">Excluir</a></td>
+                  <td>
+                    <button class="btn btn-sm btn-warning"
+                      onclick="editarResponsavel(
+                        '{{ responsavel.id }}',
+                        '{{ responsavel.nome }}',
+                        '{{ responsavel.email }}'
+                      )">
+                      Editar
+                    </button>
+
+                    <button class="btn btn-sm btn-danger"
+                      onclick="abrirModalExcluir('{{ responsavel.id }}')">
+                      Excluir
+                    </button>
+                  </td>
               </tr>
           </tbody>
           {% endfor %}
   </table>
 </div>
+
+<!-- MODAL EXCLUSÃO -->
+<div class="modal fade" name="modalExcluir" id="modalExcluir" tabindex="-1">
+  <div class="modal-dialog">
+    <form method="POST" action="{% url 'responsaveis' %}">
+      {% csrf_token %}
+      <input type="hidden" name="responsavel_id" id="responsavelExcluir">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirmar exclusão</h5>
+        </div>
+        <div class="modal-body">
+          Deseja realmente excluir este responsável?
+        </div>
+        <div class="modal-footer">
+          <button type="submit" name="excluir_responsavel" class="btn btn-danger">
+            Excluir
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function editarResponsavel(id, nome, email) {
+  document.getElementById('responsavel_id').value = id;
+  document.getElementById('nome').value = nome;
+  document.getElementById('email').value = email;
+  document.getElementById('btnSalvar').value = 'Atualizar Responsável';
+  window.scrollTo(0, 0);
+}
+
+function abrirModalExcluir(id) {
+  document.getElementById('responsavelExcluir').value = id;
+  new bootstrap.Modal(document.getElementById('modalExcluir')).show();
+}
+</script>
+
 {% endblock %}

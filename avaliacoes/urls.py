@@ -18,5 +18,4 @@ urlpatterns = [
     path('professores',views.professores,name='professores'),
     path('alunos',views.alunos,name='alunos'),
     path('relatorios',views.relatorios,name='relatorios'),
-    path('deletar_responsavel/<int:id>', views.deletar_responsavel, name='deletar_responsavel'),
     ]

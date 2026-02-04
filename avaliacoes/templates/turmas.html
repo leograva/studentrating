@@ -3,12 +3,14 @@
 <h3><center> Turmas </center></h3>
 <form action="" method="POST">
   {% csrf_token %}
+  <input type="hidden" name="turma_id" id="turma_id">
 
   <div class="form-group">
     <label>Nome da Turma</label>
     <input 
       type="text" 
       name="nome" 
+      id="nome"
       class="form-control" 
       placeholder="Digite o nome da turma"
       required
@@ -18,7 +20,7 @@
   <br>
 
   <div class="form-group">
-    <input type="submit" value="Cadastrar" class="btn btn-primary">
+    <input type="submit" name="salvar_turma" id="btnSalvar" value="Cadastrar" class="btn btn-primary">
   </div>  
 </form>
   {% if messages %}
@@ -33,19 +35,71 @@
       <thead>
           <tr>
               <th scope="col">Nome da turma</th>
-              <th scope="col">Editar</th>
-              <th scope="col">Excluir</th>
+              <th scope="col">Ações</th>
           </tr>
       </thead>
           {% for turma in lista_turmas %}
           <tbody>
               <tr>
                   <td>{{ turma.nome }}</td>
-                  <td><a href="">Editar</a></td>
-                  <td><a href="">Excluir</a></td>
+                  <td>
+                    <button class="btn btn-sm btn-warning"
+                      onclick="editarTurma(
+                        '{{ turma.id }}',
+                        '{{ turma.nome }}'
+                      )">
+                      Editar
+                    </button>
+
+                    <button class="btn btn-sm btn-danger"
+                      onclick="abrirModalExcluir('{{ turma.id }}')">
+                      Excluir
+                    </button>
+                  </td>
               </tr>
           </tbody>
           {% endfor %}
   </table>
 </div>
+
+<!-- MODAL EXCLUSÃO -->
+<div class="modal fade" name="modalExcluir" id="modalExcluir" tabindex="-1">
+  <div class="modal-dialog">
+    <form method="POST" action="{% url 'turmas' %}">
+      {% csrf_token %}
+      <input type="hidden" name="turma_id" id="turmaExcluir">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirmar exclusão</h5>
+        </div>
+        <div class="modal-body">
+          Deseja realmente excluir esta turma?
+        </div>
+        <div class="modal-footer">
+          <button type="submit" name="excluir_turma" class="btn btn-danger">
+            Excluir
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function editarTurma(id, nome) {
+  document.getElementById('turma_id').value = id;
+  document.getElementById('nome').value = nome;
+  document.getElementById('btnSalvar').value = 'Atualizar Turma';
+  window.scrollTo(0, 0);
+}
+
+function abrirModalExcluir(id) {
+  document.getElementById('turmaExcluir').value = id;
+  new bootstrap.Modal(document.getElementById('modalExcluir')).show();
+}
+</script>
+
 {% endblock %}

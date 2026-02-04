@@ -1,32 +1,34 @@
 {% extends 'base.html' %}
 {% block content %}
-<h3><center> Professores </center></h3><form action="" method="POST">
+<h3><center> Professores </center></h3>
+<form action="" method="POST">
   {% csrf_token %}
+  <input type="hidden" name="professor_id" id="professor_id">
 
   <div class="form-group">
     <label>Nome</label>
-    <input type="text" name="nome" class="form-control" placeholder="Digite o nome do professor">
+    <input type="text" name="nome" id="nome" class="form-control" placeholder="Digite o nome do professor">
   </div>
 
   <br>
 
   <div class="form-group">
     <label>E-mail</label>
-    <input type="email" name="email" class="form-control" placeholder="Digite o e-mail">
+    <input type="email" name="email" id="email" class="form-control" placeholder="Digite o e-mail">
   </div>
 
   <br>
 
   <div class="form-group">
     <label>Senha</label>
-    <input type="password" name="senha" class="form-control" placeholder="Senha inicial">
+    <input type="password" name="senha" id="senha" class="form-control" placeholder="Senha inicial">
   </div>
 
   <br>
 
   <div class="form-group">
     <label>Matéria</label>
-    <select name="materia" class="form-control">
+    <select name="materia" id="materia" class="form-control">
       <option value=""> - </option>
       <option value="Português">Português</option>
       <option value="Matemática">Matemática</option>
@@ -37,12 +39,12 @@
 
   <div class="form-group">
     <label>Ativo</label>
-    <input type="checkbox" name="ativo">
+    <input type="checkbox" name="ativo" id="ativo">
   </div>
 
   <br>
 
-  <input type="submit" value="Cadastrar" class="btn btn-primary">
+  <input type="submit" name="salvar_professor" id="btnSalvar" value="Cadastrar" class="btn btn-primary">
 </form>
 
   {% if messages %}
@@ -62,6 +64,7 @@
               <th scope="col">E-mail</th>
               <th scope="col">Matéria</th>
               <th scope="col">Status</th>
+              <th scope="col">Ações</th>
           </tr>
       </thead>
           {% for professor in lista_professores %}
@@ -75,10 +78,72 @@
                   {% else %}
                   <td>Inativo</td>
                   {% endif %}
+                  <td>
+                    <button class="btn btn-sm btn-warning"
+                      onclick="editarProfessor(
+                        '{{ professor.id }}',
+                        '{{ professor.nome }}',
+                        '{{ professor.email }}',
+                        '{{ professor.senha }}',
+                        '{{ professor.materia }}',
+                        {{ professor.ativo|lower }}
+                      )">
+                      Editar
+                    </button>
 
+                    <button class="btn btn-sm btn-danger"
+                      onclick="abrirModalExcluir('{{ professor.id }}')">
+                      Excluir
+                    </button>
+                  </td>
               </tr>
           </tbody>
           {% endfor %}
   </table>
 </div>
+
+<!-- MODAL EXCLUSÃO -->
+<div class="modal fade" name="modalExcluir" id="modalExcluir" tabindex="-1">
+  <div class="modal-dialog">
+    <form method="POST" action="{% url 'professores' %}">
+      {% csrf_token %}
+      <input type="hidden" name="professor_id" id="professorExcluir">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Confirmar exclusão</h5>
+        </div>
+        <div class="modal-body">
+          Deseja realmente excluir este professor?
+        </div>
+        <div class="modal-footer">
+          <button type="submit" name="excluir_professor" class="btn btn-danger">
+            Excluir
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Cancelar
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function editarProfessor(id, nome, email, senha, materia, ativo) {
+  document.getElementById('professor_id').value = id;
+  document.getElementById('nome').value = nome;
+  document.getElementById('email').value = email;
+  document.getElementById('senha').value = senha;
+  document.getElementById('materia').value = materia;
+  document.getElementById('ativo').checked = ativo;
+  document.getElementById('btnSalvar').value = 'Atualizar Professor';
+  window.scrollTo(0, 0);
+}
+
+function abrirModalExcluir(id) {
+  document.getElementById('professorExcluir').value = id;
+  new bootstrap.Modal(document.getElementById('modalExcluir')).show();
+}
+</script>
+
 {% endblock %}
