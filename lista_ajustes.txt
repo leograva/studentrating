@@ -1,5 +1,0 @@
-# Projeto limpo e otimizado
-# - Imports removidos e organizados
-# - Código duplicado/não utilizado removido
-# - Comentários desnecessários removidos
-# - Estrutura Django mantida intacta
