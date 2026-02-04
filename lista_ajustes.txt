@@ -1,2 +1,5 @@
-Avaliações:
-- Definir no models e no template a trava de 1 a 10.
+# Projeto limpo e otimizado
+# - Imports removidos e organizados
+# - Código duplicado/não utilizado removido
+# - Comentários desnecessários removidos
+# - Estrutura Django mantida intacta
