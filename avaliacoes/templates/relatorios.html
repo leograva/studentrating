@@ -1,20 +1,29 @@
 {% extends 'base.html' %}
 {% block content %}
 <h3><center> Relatórios de Avaliações </center></h3>
-<form action="" method="POST">{% csrf_token %}
+<form id="relatorioForm" action="" method="GET">
     <div class="form-group">
-      <label for="exampleFormControlInput1">Turma</label>
-      <select name="turma" class="form-control" id="exampleFormControlInput1">
+      <label for="turma_select">Turma</label>
+      <select name="turma" class="form-control" id="turma_select">
+        <option value="">-- Selecione --</option>
         {% for turma in lista_turmas %}
           <option value="{{ turma.id }}">{{ turma.nome }}</option>
         {% endfor %}
       </select>
     </div><br>
+    <div class="form-group">
+      <label for="aluno_select">Aluno</label>
+      <select name="aluno" class="form-control" id="aluno_select">
+        <option value="">-- Selecione turma primeiro --</option>
+        {% for aluno in lista_alunos %}
+          <option value="{{ aluno.id }}" data-turma="{{ aluno.turma.id }}">{{ aluno.nome }}</option>
+        {% endfor %}
+      </select>
     <br>
     <div class="form-group">
       <br>
-      <input type="submit" value="Gerar relatório">
-    </div>  
+      <a id="btnPdf" class="btn btn-primary" href="#" target="_blank">Gerar PDF</a>
+    </div>
   </form>
   {% if messages %}
   {% for m in messages %}
@@ -23,28 +32,57 @@
       </div>
   {% endfor %}
   {% endif %}
-<div class="table-wrapper-scroll-y my-custom-scrollbar">
-  <table class="table table-striped mb-1">
-      <thead>
-          <tr>
-              <th scope="col">Aluno</th>
-              <th scope="col">Turma</th>
-              <th scope="col">Nota</th>
-              <th scope="col">Data</th>
-              <th scope="col">Editar</th>
-          </tr>
-      </thead>
-          {% for avaliacao in lista_avaliacoes %}
-          <tbody>
-              <tr>
-                  <td>{{avaliacao.aluno.nome}}</td>
-                  <td>{{avaliacao.aluno.turma.nome}}</td>
-                  <td>{{avaliacao.nota}}</td>
-                  <td>{{avaliacao.data}}</td>
-                  <td><a href="">Editar</a></td>
-              </tr>
-          </tbody>
-          {% endfor %}
-  </table>
-</div>
+  <div id="detalhes" class="mt-3"></div>
+
+  <script>
+  document.getElementById('turma_select').addEventListener('change', function () {
+    const turmaId = this.value;
+    const options = document.querySelectorAll('#aluno_select option');
+    options.forEach(opt => {
+      if (!opt.dataset.turma) return;
+      opt.style.display = (turmaId === '' || opt.dataset.turma === turmaId) ? 'block' : 'none';
+    });
+    document.getElementById('aluno_select').value = '';
+    document.getElementById('detalhes').innerHTML = '';
+    document.getElementById('btnPdf').href = '#';
+  });
+
+  document.getElementById('aluno_select').addEventListener('change', function () {
+    const turmaId = document.getElementById('turma_select').value;
+    const alunoId = this.value;
+    if (!alunoId) return;
+    const url = new URL(window.location.origin + "{% url 'relatorios_data' %}");
+    url.searchParams.set('turma', turmaId);
+    url.searchParams.set('aluno', alunoId);
+
+    fetch(url)
+      .then(resp => resp.json())
+      .then(data => {
+        const list = data.avaliacoes;
+        const container = document.getElementById('detalhes');
+        if (!list.length) {
+          container.innerHTML = '<div class="alert alert-info">Nenhuma avaliação encontrada para este aluno.</div>';
+          document.getElementById('btnPdf').href = '#';
+          return;
+        }
+        let html = '<h5>Detalhes das Avaliações</h5><ul class="list-group">';
+        list.forEach(a => {
+          html += `<li class="list-group-item"><strong>Data:</strong> ${new Date(a.data_criacao).toLocaleString()}<br>`+
+              `<strong>Professor:</strong> ${a.professor || '-'} (${a.materia || '-'})<br>`+
+              `<strong>Notas:</strong> Conhecimento ${a.nota_conhecimento} | Habilidade ${a.nota_habilidade} | Engajamento ${a.nota_engajamento} | Competência ${a.nota_competencia}<br>`+
+              `<strong>Comentário:</strong> ${a.comentario || '-'}`+
+              `</li>`;
+        });
+        html += '</ul>';
+        container.innerHTML = html;
+
+        // Atualiza link do PDF
+        const pdfUrl = new URL(window.location.origin + "{% url 'relatorios_pdf' %}");
+        pdfUrl.searchParams.set('turma', turmaId);
+        pdfUrl.searchParams.set('aluno', alunoId);
+        document.getElementById('btnPdf').href = pdfUrl.toString();
+      })
+      .catch(err => console.error(err));
+  });
+  </script>
 {% endblock %}

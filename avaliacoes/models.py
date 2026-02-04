@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -47,22 +48,20 @@ class Professor(models.Model):
         ('Biologia', 'Biologia'),
     ]
 
-    nome = models.CharField(max_length=100)
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
     materia = models.CharField(max_length=50, choices=MATERIAS_CHOICES)
-    email = models.EmailField(unique=True)
-    senha = models.CharField(max_length=128)
-    ativo = models.BooleanField(default=True) 
 
     class Meta:
         verbose_name = "Professor"
         verbose_name_plural = "Professores" # Define o nome plural personalizado
 
     def __str__(self):
-        return self.nome
+        return self.user.get_full_name() or self.user.username
 
 class Avaliacao(models.Model):
     turma = models.ForeignKey(Turma, on_delete=models.CASCADE)
     aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE)
+    professor = models.ForeignKey(Professor, on_delete=models.CASCADE, null=True, blank=True)
 
     nota_conhecimento = models.IntegerField()
     nota_habilidade = models.IntegerField()
@@ -70,4 +69,9 @@ class Avaliacao(models.Model):
     nota_competencia = models.IntegerField()
 
     comentario = models.TextField(blank=True, null=True)
-    data_avaliacao = models.DateTimeField(auto_now_add=True)
+    
+    # Campos de auditoria
+    data_criacao = models.DateTimeField(auto_now_add=True)
+    data_atualizacao = models.DateTimeField(auto_now=True)
+    criado_por = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='avaliacoes_criadas')
+    atualizado_por = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='avaliacoes_atualizadas')

@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 {% block content %}
-<h3><center> Professores </center></h3>
+<h3><center> Professores - Usuários do Sistema </center></h3>
 <form action="" method="POST">
   {% csrf_token %}
   <input type="hidden" name="professor_id" id="professor_id">
 
   <div class="form-group">
-    <label>Nome</label>
-    <input type="text" name="nome" id="nome" class="form-control" placeholder="Digite o nome do professor">
+    <label>Nome Completo</label>
+    <input type="text" name="nome" id="nome" class="form-control" placeholder="Digite o nome completo do professor" required>
   </div>
 
   <br>
@@ -21,25 +21,24 @@
 
   <div class="form-group">
     <label>Senha</label>
-    <input type="password" name="senha" id="senha" class="form-control" placeholder="Senha inicial">
+    <input type="password" name="senha" id="senha" class="form-control" placeholder="Senha inicial" id="senhaInput">
+    <small class="form-text text-muted">Deixe em branco para manter a senha atual (ao editar)</small>
   </div>
 
   <br>
 
   <div class="form-group">
     <label>Matéria</label>
-    <select name="materia" id="materia" class="form-control">
-      <option value=""> - </option>
+    <select name="materia" id="materia" class="form-control" required>
+      <option value=""> - Selecione - </option>
       <option value="Português">Português</option>
       <option value="Matemática">Matemática</option>
+      <option value="História">História</option>
+      <option value="Geografia">Geografia</option>
+      <option value="Física">Física</option>
+      <option value="Química">Química</option>
+      <option value="Biologia">Biologia</option>
     </select>
-  </div>
-
-  <br>
-
-  <div class="form-group">
-    <label>Ativo</label>
-    <input type="checkbox" name="ativo" id="ativo">
   </div>
 
   <br>
@@ -70,10 +69,10 @@
           {% for professor in lista_professores %}
           <tbody>
               <tr>
-                  <td>{{ professor.nome }}</td>
-                  <td>{{ professor.email }}</td>
+                  <td>{{ professor.user.get_full_name }}</td>
+                  <td>{{ professor.user.email }}</td>
                   <td>{{ professor.materia}}</td>
-                  {% if professor.ativo == True %}
+                  {% if professor.user.is_active %}
                   <td>Ativo</td>
                   {% else %}
                   <td>Inativo</td>
@@ -82,11 +81,9 @@
                     <button class="btn btn-sm btn-warning"
                       onclick="editarProfessor(
                         '{{ professor.id }}',
-                        '{{ professor.nome }}',
-                        '{{ professor.email }}',
-                        '{{ professor.senha }}',
-                        '{{ professor.materia }}',
-                        {{ professor.ativo|lower }}
+                        '{{ professor.user.get_full_name }}',
+                        '{{ professor.user.email }}',
+                        '{{ professor.materia }}'
                       )">
                       Editar
                     </button>
@@ -113,7 +110,7 @@
           <h5 class="modal-title">Confirmar exclusão</h5>
         </div>
         <div class="modal-body">
-          Deseja realmente excluir este professor?
+          Deseja realmente excluir este professor e sua conta de usuário?
         </div>
         <div class="modal-footer">
           <button type="submit" name="excluir_professor" class="btn btn-danger">
@@ -129,13 +126,13 @@
 </div>
 
 <script>
-function editarProfessor(id, nome, email, senha, materia, ativo) {
+function editarProfessor(id, nome, email, materia) {
   document.getElementById('professor_id').value = id;
   document.getElementById('nome').value = nome;
   document.getElementById('email').value = email;
-  document.getElementById('senha').value = senha;
   document.getElementById('materia').value = materia;
-  document.getElementById('ativo').checked = ativo;
+  document.getElementById('senha').value = '';
+  document.getElementById('senhaInput').placeholder = 'Deixe em branco para manter a senha';
   document.getElementById('btnSalvar').value = 'Atualizar Professor';
   window.scrollTo(0, 0);
 }
